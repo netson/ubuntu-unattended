@@ -19,10 +19,12 @@ This script has been tested on and with these two versions as well, but I see no
 
 ## Usage
 
-* From your command line, run the following command:
+* From your command line, run the following commands:
 
 ```
-$ sudo curl -sS https://raw.githubusercontent.com/netson/ubuntu-unattended/master/create-unattended-iso.sh | sh
+$ wget https://raw.githubusercontent.com/netson/ubuntu-unattended/master/create-unattended-iso.sh
+$ chmod +x create-unattended-iso.sh
+$ sudo ./create-unattended-iso.sh
 ```
 
 * Choose which version you would like to remaster:
