@@ -73,7 +73,7 @@ if ! grep -q "noninteractive" /proc/cmdline ; then
 fi
 
 # print status message
-echo " preparing your server ..."
+echo " preparing your server; this may take a few minutes ..."
 
 # set fqdn
 fqdn="$hostname.$domain"
@@ -112,7 +112,7 @@ pluginsync=true\n\
         if [[ ! -f $tmp/finish.sh ]]; then
             echo -n " downloading finish.sh: "
             cd $tmp
-            "https://github.com/netson/ubuntu-unattended/raw/master/finish.sh"
+            "https://raw.githubusercontent.com/netson/ubuntu-unattended/master/finish.sh"
         fi
 
         # set proper permissions on finish script
