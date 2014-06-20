@@ -90,7 +90,7 @@ apt-get -y upgrade > /dev/null 2>&1
 
 # install puppet
 if [[ include_puppet_repo ]]; then
-    # install puppet
+    # install puppet repo
     wget https://apt.puppetlabs.com/$puppet_deb -O $tmp/$puppet_deb > /dev/null 2>&1
     dpkg -i $tmp/$puppet_deb > /dev/null 2>&1
     apt-get -y update > /dev/null 2>&1
@@ -98,6 +98,7 @@ if [[ include_puppet_repo ]]; then
     
     # check to install puppet agent
     if [[ setup_agent ]] ; then
+        # install puppet
         apt-get -y install puppet > /dev/null 2>&1
 
         # set puppet master settings
@@ -113,7 +114,7 @@ pluginsync=true\n\
         if [[ ! -f $tmp/finish.sh ]]; then
             echo -n " downloading finish.sh: "
             cd $tmp
-            "https://raw.githubusercontent.com/netson/ubuntu-unattended/master/finish.sh"
+            download "https://raw.githubusercontent.com/netson/ubuntu-unattended/master/finish.sh"
         fi
 
         # set proper permissions on finish script
