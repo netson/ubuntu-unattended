@@ -99,6 +99,7 @@ if [[ include_puppet_repo ]]; then
     # check to install puppet agent
     if [[ setup_agent ]] ; then
         # install puppet
+        echo " you should not see this"
         apt-get -y install puppet > /dev/null 2>&1
 
         # set puppet master settings
