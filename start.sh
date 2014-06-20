@@ -43,10 +43,10 @@ if ! grep -q "noninteractive" /proc/cmdline ; then
     while true; do
         read -p " do you wish to add the latest puppet repositories from puppetlabs? [y/n]: " yn
         case $yn in
-            [Yy]* ) include_puppet_repo=true
+            [Yy]* ) include_puppet_repo=1
                     puppet_deb="puppetlabs-release-"$ubuntu_version".deb"
                     break;;
-            [Nn]* ) include_puppet_repo=false
+            [Nn]* ) include_puppet_repo=0
                     puppet_deb=""
                     puppetmaster="puppet"
                     break;;
@@ -59,10 +59,10 @@ if ! grep -q "noninteractive" /proc/cmdline ; then
         while true; do
             read -p " do you wish to setup the puppet agent? [y/n]: " yn
             case $yn in
-                [Yy]* ) setup_agent=true
+                [Yy]* ) setup_agent=1
                         read -ep " please enter your puppet master: " -i "$default_puppetmaster" puppetmaster
                         break;;
-                [Nn]* ) setup_agent=false
+                [Nn]* ) setup_agent=0
                         puppetmaster="puppet"
                         break;;
                 * ) echo " please answer [y]es or [n]o.";;
@@ -89,7 +89,7 @@ apt-get -y update > /dev/null 2>&1
 apt-get -y upgrade > /dev/null 2>&1
 
 # install puppet
-if [[ include_puppet_repo ]]; then
+if [[ include_puppet_repo -eq 1 ]]; then
     # install puppet repo
     wget https://apt.puppetlabs.com/$puppet_deb -O $tmp/$puppet_deb > /dev/null 2>&1
     dpkg -i $tmp/$puppet_deb > /dev/null 2>&1
@@ -97,7 +97,7 @@ if [[ include_puppet_repo ]]; then
     rm $tmp/$puppet_deb
     
     # check to install puppet agent
-    if [[ setup_agent ]] ; then
+    if [[ setup_agent -eq 1 ]] ; then
         # install puppet
         apt-get -y install puppet > /dev/null 2>&1
 
@@ -112,7 +112,6 @@ pluginsync=true\n\
 
         # download the finish script if it doesn't yet exist
         if [[ ! -f $tmp/finish.sh ]]; then
-            echo " you should not see this"
             echo -n " downloading finish.sh: "
             cd $tmp
             download "https://raw.githubusercontent.com/netson/ubuntu-unattended/master/finish.sh"
