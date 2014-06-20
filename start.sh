@@ -94,6 +94,7 @@ if [[ include_puppet_repo ]]; then
     wget https://apt.puppetlabs.com/$puppet_deb -O $tmp/$puppet_deb > /dev/null 2>&1
     dpkg -i $tmp/$puppet_deb > /dev/null 2>&1
     apt-get -y update > /dev/null 2>&1
+    rm $tmp/$puppet_deb
     
     # check to install puppet agent
     if [[ setup_agent ]] ; then
