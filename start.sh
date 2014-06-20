@@ -99,7 +99,6 @@ if [[ include_puppet_repo ]]; then
     # check to install puppet agent
     if [[ setup_agent ]] ; then
         # install puppet
-        echo " you should not see this"
         apt-get -y install puppet > /dev/null 2>&1
 
         # set puppet master settings
@@ -113,6 +112,7 @@ pluginsync=true\n\
 
         # download the finish script if it doesn't yet exist
         if [[ ! -f $tmp/finish.sh ]]; then
+            echo " you should not see this"
             echo -n " downloading finish.sh: "
             cd $tmp
             download "https://raw.githubusercontent.com/netson/ubuntu-unattended/master/finish.sh"
