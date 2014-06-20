@@ -2,6 +2,7 @@
 
 # file names & paths
 tmp="/tmp"  # destination folder to store the final iso file
+hostname="ubuntu"
 
 # define spinner function for slow tasks
 # courtesy of http://fitnr.com/showing-a-bash-spinner.html
@@ -46,7 +47,7 @@ function program_is_installed {
 # print a pretty header
 echo 
 echo " +---------------------------------------------------+"
-echo " |               UNATTENDED UBUNTU ISO               |"
+echo " |            UNATTENDED UBUNTU ISO MAKER            |"
 echo " +---------------------------------------------------+"
 echo 
 
@@ -72,26 +73,12 @@ while true; do
 done
 
 # ask the user questions about his/her preferences
-read -ep " please enter your preferred hostname: " -i "ubuntu" hostname
 read -ep " please enter your preferred timezone: " -i "Europe/Amsterdam" timezone
 read -ep " please enter your preferred username: " -i "netson" username
 read -sp " please enter your preferred password: " password
 printf "\n"
 read -sp " confirm your preferred password: " password2
 printf "\n"
-
-# ask whether to include vmware tools or not
-while true; do
-    read -p " do you wish to install the VMware OSP tools? [y/n]: " yn
-    case $yn in
-        [Yy]* ) include_vmware=1
-                break;;
-        [Nn]* ) include_vmware=0
-                break;;
-        * ) echo " please answer [y]es or [n]o.";;
-    esac
-done
-
 
 # check if the passwords match to prevent headaches
 if [[ "$password" != "$password2" ]]; then
@@ -117,9 +104,9 @@ fi
 # install required packages
 echo " installing required packages"
 if [ $(program_is_installed "mkpasswd") -eq 0 ] || [ $(program_is_installed "mkisofs") -eq 0 ]; then
-    (apt-get update > /dev/null 2>&1) &
+    (apt-get -y update > /dev/null 2>&1) &
     spinner $!
-    (apt-get -y install whois genisoimage> /dev/null 2>&1) &
+    (apt-get -y install whois genisoimage > /dev/null 2>&1) &
     spinner $!
 fi
 
@@ -144,17 +131,17 @@ spinner $!
 cd $tmp/iso_new
 echo en > $tmp/iso_new/isolinux/lang
 
+# set late command
+late_command="chroot /target wget -O /home/$username/start.sh https://github.com/netson/ubuntu-unattended/raw/master/start.sh ;\
+    chroot /target chmod +x /home/$username/start.sh ;"
+
 # copy the netson seed file to the iso
 cp -rT $tmp/$seed_file $tmp/iso_new/preseed/$seed_file
 
-# include vmware tools
-if [[ include_vmware -eq 1 ]]; then
-    echo '
-# install vmware tools
-d-i apt-setup/local0/repository                             string      http://packages.vmware.com/tools/esx/5.5latest/ubuntu precise main
-d-i apt-setup/local0/comment                                string      VMware OSP Tools
-d-i preseed/late_command                                    string      in-target sh -c "wget http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-RSA-KEY.pub -O - | apt-key add - ; wget http://packages.vmware.com/tools/keys/VMWARE-PACKAGING-GPG-DSA-KEY.pub -O - | apt-key add - ; apt-get update"; apt-install vmware-tools-esx-nox' >> $tmp/iso_new/preseed/$seed_file
-fi
+# include firstrun script
+echo "
+# setup firstrun script
+d-i preseed/late_command                                    string      $late_command" >> $tmp/iso_new/preseed/$seed_file
 
 # generate the password hash
 pwhash=$(echo $password | mkpasswd -s -m sha-512)

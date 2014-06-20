@@ -42,12 +42,6 @@ $ sudo ./create-unattended-iso.sh
  please enter your preference: [1|2]:
 ```
 
-* Enter your desired hostname; the default is *ubuntu*:
-
-```
- please enter your preferred hostname: ubuntu
-```
-
 * Enter your desired timezone; the default is *Europe/Amsterdam*:
 
 ```
@@ -72,17 +66,11 @@ $ sudo ./create-unattended-iso.sh
  confirm your preferred password:
 ```
 
-* Indicate whether or not you wish to auto-install the VMWare OSP Tools for Ubuntu:
-
-```
- do you wish to install the VMware OSP tools? [y/n]: y
-```
-
 * Sit back and relax, while the script does the rest! :)
 
 ## What it does
 
-This script does a buch of stuff, here's the quick walk-through:
+This script does a bunch of stuff, here's the quick walk-through:
 
 * It asks you for your preferences regarding the unattended ISO
 * Downloads the appropriate Ubuntu original ISO straight from the Ubuntu servers; if a file with the exact name exists, it will use that instead (so it won't download it more than once if you are creating several unattended ISO's with different defaults)
@@ -114,6 +102,12 @@ This script does a buch of stuff, here's the quick walk-through:
  your hostname is: ubuntu
  your timezone is: Europe/Amsterdam
 ```
+
+### Once Ubuntu is installed ...
+
+Just fire off the start.sh script in your users' home directory to complete the installation. This will allow you set automatically setup your puppet agent using the Puppetlabs repositories to ensure you have the latest version:
+
+```$ sudo ~/start.sh``` 
 
 ### That's it, enjoy! :)
 
