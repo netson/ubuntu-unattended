@@ -7,6 +7,7 @@ echo " finishing your puppet installation ... "
 puppet resource package puppet ensure=latest > /dev/null
 puppet resource service puppet ensure=running enable=true > /dev/null
 puppet agent --enable > /dev/null
+puppet agent
 puppet agent --test
 
 # remove myself to prevent any unintended changes at a later stage
