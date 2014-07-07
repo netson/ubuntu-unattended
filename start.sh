@@ -7,6 +7,12 @@ default_domain="netson.local"
 default_puppetmaster="foreman.netson.nl"
 tmp="/home/netson/"
 
+# set variebles to secure fstab
+tmpfile="/root/tmp_mount.bin"
+tmpfilesize=1048576
+fstabfile="/etc/fstab"
+ubuntu_version=$(lsb_release -cs)
+
 clear
 
 # check for root privilege
@@ -88,12 +94,8 @@ hostname "$hostname"
 apt-get -y update > /dev/null 2>&1
 apt-get -y upgrade > /dev/null 2>&1
 apt-get -y dist-upgrade > /dev/null 2>&1
-
-# set variebles to secure fstab
-tmpfile="/root/tmp_mount.bin"
-tmpfilesize=1048576
-fstabfile="/etc/fstab"
-ubuntu_version=$(lsb_release -cs)
+apt-get -y autoremove > /dev/null 2>&1
+apt-get -y purge > /dev/null 2>&1
 
 # determine shm location
 if [[ $ubuntu_version -eq "trusty" ]]; then
@@ -116,8 +118,8 @@ echo $definition_var_tmp >> $fstabfile
 
 # create tmp file
 if [[ ! -f $tmpfile ]]; then
-    dd if=/dev/zero of=$tmpfile bs=1024 count=$tmpfilesize
-    mkfs.ext4 -F $tmpfile
+    dd if=/dev/zero of=$tmpfile bs=1024 count=$tmpfilesize > /dev/null 2>&1
+    mkfs.ext4 -F $tmpfile > /dev/null 2>&1
 fi
 
 # install puppet
@@ -166,4 +168,7 @@ fi
 rm $0
 
 # finish
-echo " DONE!"
+echo " DONE; rebooting ... "
+
+# reboot
+#reboot
