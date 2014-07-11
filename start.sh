@@ -7,12 +7,6 @@ default_domain="netson.local"
 default_puppetmaster="foreman.netson.nl"
 tmp="/home/netson/"
 
-# set variebles to secure fstab
-tmpfile="/root/tmp_mount.bin"
-tmpfilesize=1048576
-fstabfile="/etc/fstab"
-ubuntu_version=$(lsb_release -cs)
-
 clear
 
 # check for root privilege
@@ -96,31 +90,6 @@ apt-get -y upgrade > /dev/null 2>&1
 apt-get -y dist-upgrade > /dev/null 2>&1
 apt-get -y autoremove > /dev/null 2>&1
 apt-get -y purge > /dev/null 2>&1
-
-# determine shm location
-if [[ $ubuntu_version -eq "trusty" ]]; then
-    shm_location="/run/shm"
-else
-    shm_location="/dev/shm"
-fi
-
-# define fstab entries
-definition_shm="tmpfs	${shm_location}	tmpfs	defaults,nosuid,noexec,nodev	0	0"
-definition_tmp="${tmpfile}	/tmp	ext4	loop,nosuid,noexec,nodev,rw	0	0"
-definition_var_tmp="/tmp	/var/tmp	none	nosuid,noexec,nodev,rw,bind	0	0"
-
-# secure fstab
-echo "" >> $fstabfile
-echo "# security" >> $fstabfile
-echo $definition_shm >> $fstabfile
-echo $definition_tmp >> $fstabfile
-echo $definition_var_tmp >> $fstabfile
-
-# create tmp file
-if [[ ! -f $tmpfile ]]; then
-    dd if=/dev/zero of=$tmpfile bs=1024 count=$tmpfilesize > /dev/null 2>&1
-    mkfs.ext4 -F $tmpfile > /dev/null 2>&1
-fi
 
 # install puppet
 if [[ include_puppet_repo -eq 1 ]]; then
