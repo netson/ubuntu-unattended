@@ -1,10 +1,18 @@
 #!/bin/bash
 set -e
 
+# check for root privilege
+if [ "$(id -u)" != "0" ]; then
+   echo " this script must be run as root" 1>&2
+   echo
+   exit 1
+fi
+
 echo " finishing your puppet installation ... "
 
 # run puppet config
-# puppet resource package puppet ensure=latest > /dev/null
+sed -i "s@START=no@START=yes@g" /etc/default/puppet
+puppet resource package puppet ensure=latest > /dev/null
 puppet resource service puppet ensure=running enable=true > /dev/null
 puppet agent --enable > /dev/null
 puppet agent
