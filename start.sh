@@ -140,4 +140,4 @@ rm $0
 echo " DONE; rebooting ... "
 
 # reboot
-#reboot
+reboot
