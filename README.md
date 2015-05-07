@@ -13,7 +13,7 @@ Created by: **Rinck Sonnenberg (Netson)**
 The script supports the following Ubuntu editions out of the box:
 
 * Ubuntu 12.04.4 Server LTS amd64 - Precise Pangolin
-* Ubuntu 14.04 Server LTS amd64 - Trusty Tahr
+* Ubuntu 14.04.2 Server LTS amd64 - Trusty Tahr
 
 This script has been tested on and with these two versions as well, but I see no reason why it shouldn't work with other Ubuntu editions. Other editions would require minor changes to the script though.
 
@@ -37,7 +37,7 @@ $ sudo ./create-unattended-iso.sh
  which ubuntu edition would you like to remaster:
 
   [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin
-  [2] Ubuntu 14.04 LTS Server amd64 - Trusty Tahr
+  [2] Ubuntu 14.04.2 LTS Server amd64 - Trusty Tahr
 
  please enter your preference: [1|2]:
 ```
@@ -96,7 +96,7 @@ This script does a bunch of stuff, here's the quick walk-through:
  creating the remastered iso
  -----
  finished remastering your ubuntu iso file
- the new file is located at: /tmp/ubuntu-14.04-server-amd64-unattended.iso
+ the new file is located at: /tmp/ubuntu-14.04.2-server-amd64-unattended.iso
  your username is: netson
  your password is: 
  your hostname is: ubuntu
