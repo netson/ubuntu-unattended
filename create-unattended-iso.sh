@@ -45,18 +45,18 @@ function program_is_installed {
 }
 
 # print a pretty header
-echo 
+echo
 echo " +---------------------------------------------------+"
 echo " |            UNATTENDED UBUNTU ISO MAKER            |"
 echo " +---------------------------------------------------+"
-echo 
+echo
 
 # ask whether to include vmware tools or not
 while true; do
     echo " which ubuntu edition would you like to remaster:"
     echo
     echo "  [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin"
-    echo "  [2] Ubuntu 14.04.2 LTS Server amd64 - Trusty Tahr"
+    echo "  [2] Ubuntu 14.04.3 LTS Server amd64 - Trusty Tahr"
     echo
     read -p " please enter your preference: [1|2]: " ubver
     case $ubver in
@@ -64,9 +64,9 @@ while true; do
                 download_location="http://releases.ubuntu.com/12.04/"     # location of the file to be downloaded
                 new_iso_name="ubuntu-12.04.4-server-amd64-unattended.iso" # filename of the new iso file to be created
                 break;;
-        [2]* )  download_file="ubuntu-14.04.2-server-amd64.iso"             # filename of the iso to be downloaded
+        [2]* )  download_file="ubuntu-14.04.3-server-amd64.iso"             # filename of the iso to be downloaded
                 download_location="http://releases.ubuntu.com/14.04/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-14.04.2-server-amd64-unattended.iso"   # filename of the new iso file to be created
+                new_iso_name="ubuntu-14.04.3-server-amd64-unattended.iso"   # filename of the new iso file to be created
                 break;;
         * ) echo " please answer [1] or [2]";;
     esac
@@ -173,7 +173,7 @@ umount $tmp/iso_org
 rm -rf $tmp/iso_new
 rm -rf $tmp/iso_org
 
-# print info to user  
+# print info to user
 echo " -----"
 echo " finished remastering your ubuntu iso file"
 echo " the new file is located at: $tmp/$new_iso_name"
