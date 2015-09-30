@@ -168,6 +168,9 @@ cd $tmp/iso_new
 (mkisofs -D -r -V "NETSON_UBUNTU" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $tmp/$new_iso_name . > /dev/null 2>&1) &
 spinner $!
 
+# make iso bootable (for dd'ing to  USB stick)
+isohybrid $tmp/$new_iso_name
+
 # cleanup
 umount $tmp/iso_org
 rm -rf $tmp/iso_new
