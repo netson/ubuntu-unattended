@@ -79,6 +79,7 @@ read -sp " please enter your preferred password: " password
 printf "\n"
 read -sp " confirm your preferred password: " password2
 printf "\n"
+read -ep " Make ISO bootable via USB: " -i "yes" bootable
 
 # check if the passwords match to prevent headaches
 if [[ "$password" != "$password2" ]]; then
@@ -109,6 +110,13 @@ if [ $(program_is_installed "mkpasswd") -eq 0 ] || [ $(program_is_installed "mki
     (apt-get -y install whois genisoimage > /dev/null 2>&1) &
     spinner $!
 fi
+if [[ $bootable == "yes" ]] || [[ $bootable == "y" ]]; then
+    if [ $(program_is_installed "isohybrid") -eq 0 ]; then
+        (apt-get -y install syslinux > /dev/null 2>&1) &
+        spinner $!
+    fi
+fi
+
 
 # create working folders
 echo " remastering your iso file"
@@ -167,6 +175,11 @@ echo " creating the remastered iso"
 cd $tmp/iso_new
 (mkisofs -D -r -V "NETSON_UBUNTU" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $tmp/$new_iso_name . > /dev/null 2>&1) &
 spinner $!
+
+# make iso bootable (for dd'ing to  USB stick)
+if [[ $bootable == "yes" ]] || [[ $bootable == "y" ]]; then
+    isohybrid $tmp/$new_iso_name
+fi
 
 # cleanup
 umount $tmp/iso_org
