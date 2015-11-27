@@ -180,6 +180,11 @@ sed -i "/label install/ilabel autoinstall\n\
   kernel /install/vmlinuz\n\
   append file=/cdrom/preseed/ubuntu-server.seed initrd=/install/initrd.gz auto=true priority=high preseed/file=/cdrom/preseed/netson.seed preseed/file/checksum=$seed_checksum --" $tmp/iso_new/isolinux/txt.cfg
 
+# automate boot start, because prompt 0 and timeout 0 will not work together
+sed -i 's/^timeout 0$/timeout 1/' $tmp/iso_new/isolinux/isolinux.cfg
+sed -i '/set menu_color_highlight/ a set default=0' $tmp/iso_new/boot/grub/grub.cfg
+sed -i '/set menu_color_highlight/ a set timeout=10' $tmp/iso_new/boot/grub/grub.cfg
+
 echo " creating the remastered iso"
 cd $tmp/iso_new
 (mkisofs -D -r -V "NETSON_UBUNTU" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $tmp/$new_iso_name . > /dev/null 2>&1) &
