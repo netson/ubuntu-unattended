@@ -48,7 +48,7 @@ $ sudo ./create-unattended-iso.sh
  please enter your preferred timezone: Europe/Amsterdam
 ```
 
-* Enter your desired username; the default is *netson*:
+* Enter your desired username, root will be also possible; the default is *netson*:
 
 ```
  please enter your preferred username: netson

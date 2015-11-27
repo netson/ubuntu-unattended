@@ -1,0 +1,11 @@
+# user account setup
+d-i passwd/root-login                                       boolean     false
+d-i passwd/make-user                                        boolean     true
+d-i passwd/user-fullname                                    string      {{username}}
+d-i passwd/username                                         string      {{username}}
+d-i passwd/user-password-crypted                            password    {{pwhash}}
+d-i passwd/user-uid                                         string
+d-i user-setup/allow-password-weak                          boolean     false
+d-i passwd/user-default-groups                              string      adm cdrom dialout lpadmin plugdev sambashare
+d-i user-setup/encrypt-home                                 boolean     false
+

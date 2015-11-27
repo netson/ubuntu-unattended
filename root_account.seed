@@ -1,0 +1,5 @@
+# user account setup
+d-i passwd/root-login                                       boolean     true
+d-i passwd/make-user                                        boolean     false
+d-i passwd/root-password-crypted                            password    {{pwhash}}
+

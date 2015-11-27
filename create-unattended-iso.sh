@@ -3,6 +3,7 @@
 # file names & paths
 tmp="/tmp"  # destination folder to store the final iso file
 hostname="ubuntu"
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # define spinner function for slow tasks
 # courtesy of http://fitnr.com/showing-a-bash-spinner.html
@@ -104,11 +105,36 @@ if [[ ! -f $tmp/$download_file ]]; then
     download "$download_location$download_file"
 fi
 
-# download netson seed file
+
 seed_file="netson.seed"
-if [[ ! -f $tmp/$seed_file ]]; then
-    echo -h " downloading $seed_file: "
-    download "https://github.com/netson/ubuntu-unattended/raw/master/$seed_file"
+if [ -e ${dir}/${seed_file} ]; then
+    # use local seed file if exists
+    echo "copy seed file cp ${dir}/${seed_file} ./${seed_file}"
+    cp ${dir}/${seed_file} ./${seed_file}
+else
+    # download netson seed file
+    if [[ ! -f $tmp/$seed_file ]]; then
+        echo -h " downloading $seed_file: "
+        download "https://github.com/geraldhansen/ubuntu-unattended/raw/master/$seed_file"
+    fi
+fi
+
+if [ ${username} = "root" ]; then
+    echo -e "set up root account"
+    if [ -e ${dir}/root_account.seed ]; then 
+        cat ${dir}/root_account.seed >> $seed_file
+    else
+        download "https://github.com/geraldhansen/ubuntu-unattended/raw/master/root_account.seed"
+        cat root_account.seed >> $seed_file
+    fi
+else
+    echo -e "set up user account"
+    if [ -e ${dir}/user_account.seed ]; then 
+        cat ${dir}/user_account.seed >> $seed_file
+    else
+        download "https://github.com/geraldhansen/ubuntu-unattended/raw/master/user_account.seed"
+        cat user_account.seed >> $seed_file
+    fi 
 fi
 
 # install required packages
