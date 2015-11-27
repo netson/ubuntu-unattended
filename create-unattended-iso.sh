@@ -72,8 +72,17 @@ while true; do
     esac
 done
 
+if [ -f /etc/timezone ]; then
+  timezone=`cat /etc/timezone`
+elif [ -h /etc/localtime]; then
+  timezone=`readlink /etc/localtime | sed "s/\/usr\/share\/zoneinfo\///"`
+else
+  checksum=`md5sum /etc/localtime | cut -d' ' -f1`
+  timezone=`find /usr/share/zoneinfo/ -type f -exec md5sum {} \; | grep "^$checksum" | sed "s/.*\/usr\/share\/zoneinfo\///" | head -n 1`
+fi
+
 # ask the user questions about his/her preferences
-read -ep " please enter your preferred timezone: " -i "Europe/Amsterdam" timezone
+read -ep " please enter your preferred timezone: " -i "${timezone}" timezone
 read -ep " please enter your preferred username: " -i "netson" username
 read -sp " please enter your preferred password: " password
 printf "\n"
