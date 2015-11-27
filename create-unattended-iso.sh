@@ -174,17 +174,8 @@ spinner $!
 cd $tmp/iso_new
 echo en > $tmp/iso_new/isolinux/lang
 
-# set late command
-late_command="chroot /target wget -O /home/$username/start.sh https://github.com/netson/ubuntu-unattended/raw/master/start.sh ;\
-    chroot /target chmod +x /home/$username/start.sh ;"
-
 # copy the netson seed file to the iso
 cp -rT $tmp/$seed_file $tmp/iso_new/preseed/$seed_file
-
-# include firstrun script
-echo "
-# setup firstrun script
-d-i preseed/late_command                                    string      $late_command" >> $tmp/iso_new/preseed/$seed_file
 
 # generate the password hash
 pwhash=$(echo $password | mkpasswd -s -m sha-512)
