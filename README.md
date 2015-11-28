@@ -41,7 +41,7 @@ $ sudo ./create-unattended-iso.sh
   [2] Ubuntu 14.04.2 LTS Server amd64 - Trusty Tahr
   [3] Ubuntu 15.10 Server amd64       - Wily Werewolf
 
- please enter your preference: [1|2]:
+ please enter your preference: [1|2|3]:
 ```
 
 * Enter your desired timezone; the default is the timezone were the script runs:
