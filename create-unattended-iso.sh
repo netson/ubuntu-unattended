@@ -3,7 +3,6 @@
 # file names & paths
 tmp="/tmp"  # destination folder to store the final iso file
 hostname="ubuntu"
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # define spinner function for slow tasks
 # courtesy of http://fitnr.com/showing-a-bash-spinner.html
@@ -58,9 +57,8 @@ while true; do
     echo
     echo "  [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin"
     echo "  [2] Ubuntu 14.04.3 LTS Server amd64 - Trusty Tahr"
-    echo "  [3] Ubuntu 15.10 Server amd64       - Wily Werewolf"
     echo
-    read -p " please enter your preference: [1|2|3]: " ubver
+    read -p " please enter your preference: [1|2]: " ubver
     case $ubver in
         [1]* )  download_file="ubuntu-12.04.4-server-amd64.iso"           # filename of the iso to be downloaded
                 download_location="http://releases.ubuntu.com/12.04/"     # location of the file to be downloaded
@@ -70,11 +68,7 @@ while true; do
                 download_location="http://releases.ubuntu.com/14.04/"     # location of the file to be downloaded
                 new_iso_name="ubuntu-14.04.3-server-amd64-unattended.iso"   # filename of the new iso file to be created
                 break;;
-        [3]* )  download_file="ubuntu-15.10-server-amd64.iso"
-                download_location="http://releases.ubuntu.com/15.10/"
-                new_iso_name="ubuntu-15.10-server-amd64-unattended.iso"
-                break;;
-        * ) echo " please answer [1] or [2] or [3]";;
+        * ) echo " please answer [1] or [2]";;
     esac
 done
 
@@ -110,36 +104,11 @@ if [[ ! -f $tmp/$download_file ]]; then
     download "$download_location$download_file"
 fi
 
-
+# download netson seed file
 seed_file="netson.seed"
-if [ -e ${dir}/${seed_file} ]; then
-    # use local seed file if exists
-    echo "copy seed file cp ${dir}/${seed_file} ./${seed_file}"
-    cp ${dir}/${seed_file} ./${seed_file}
-else
-    # download netson seed file
-    if [[ ! -f $tmp/$seed_file ]]; then
-        echo -h " downloading $seed_file: "
-        download "https://github.com/geraldhansen/ubuntu-unattended/raw/master/$seed_file"
-    fi
-fi
-
-if [ ${username} = "root" ]; then
-    echo -e "set up root account"
-    if [ -e ${dir}/root_account.seed ]; then 
-        cat ${dir}/root_account.seed >> $seed_file
-    else
-        download "https://github.com/geraldhansen/ubuntu-unattended/raw/master/root_account.seed"
-        cat root_account.seed >> $seed_file
-    fi
-else
-    echo -e "set up user account"
-    if [ -e ${dir}/user_account.seed ]; then 
-        cat ${dir}/user_account.seed >> $seed_file
-    else
-        download "https://github.com/geraldhansen/ubuntu-unattended/raw/master/user_account.seed"
-        cat user_account.seed >> $seed_file
-    fi 
+if [[ ! -f $tmp/$seed_file ]]; then
+    echo -h " downloading $seed_file: "
+    download "https://github.com/netson/ubuntu-unattended/raw/master/$seed_file"
 fi
 
 # install required packages
@@ -179,8 +148,17 @@ spinner $!
 cd $tmp/iso_new
 echo en > $tmp/iso_new/isolinux/lang
 
+# set late command
+late_command="chroot /target wget -O /home/$username/start.sh https://github.com/netson/ubuntu-unattended/raw/master/start.sh ;\
+    chroot /target chmod +x /home/$username/start.sh ;"
+
 # copy the netson seed file to the iso
 cp -rT $tmp/$seed_file $tmp/iso_new/preseed/$seed_file
+
+# include firstrun script
+echo "
+# setup firstrun script
+d-i preseed/late_command                                    string      $late_command" >> $tmp/iso_new/preseed/$seed_file
 
 # generate the password hash
 pwhash=$(echo $password | mkpasswd -s -m sha-512)
@@ -202,11 +180,6 @@ sed -i "/label install/ilabel autoinstall\n\
   kernel /install/vmlinuz\n\
   append file=/cdrom/preseed/ubuntu-server.seed initrd=/install/initrd.gz auto=true priority=high preseed/file=/cdrom/preseed/netson.seed preseed/file/checksum=$seed_checksum --" $tmp/iso_new/isolinux/txt.cfg
 
-# automate boot start, because prompt 0 and timeout 0 will not work together
-sed -i 's/^timeout 0$/timeout 1/' $tmp/iso_new/isolinux/isolinux.cfg
-sed -i '/set menu_color_highlight/ a set default=0' $tmp/iso_new/boot/grub/grub.cfg
-sed -i '/set menu_color_highlight/ a set timeout=10' $tmp/iso_new/boot/grub/grub.cfg
-
 echo " creating the remastered iso"
 cd $tmp/iso_new
 (mkisofs -D -r -V "NETSON_UBUNTU" -cache-inodes -J -l -b isolinux/isolinux.bin -c isolinux/boot.cat -no-emul-boot -boot-load-size 4 -boot-info-table -o $tmp/$new_iso_name . > /dev/null 2>&1) &
@@ -221,7 +194,6 @@ fi
 umount $tmp/iso_org
 rm -rf $tmp/iso_new
 rm -rf $tmp/iso_org
-rm -f $tmp/$seed_file
 
 # print info to user
 echo " -----"

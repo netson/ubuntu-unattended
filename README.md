@@ -14,7 +14,6 @@ The script supports the following Ubuntu editions out of the box:
 
 * Ubuntu 12.04.4 Server LTS amd64 - Precise Pangolin
 * Ubuntu 14.04.2 Server LTS amd64 - Trusty Tahr
-* Ubuntu 15.10 Server amd64 - Wily Werewolf
 
 This script has been tested on and with these two versions as well, but I see no reason why it shouldn't work with other Ubuntu editions. Other editions would require minor changes to the script though.
 
@@ -23,7 +22,7 @@ This script has been tested on and with these two versions as well, but I see no
 * From your command line, run the following commands:
 
 ```
-$ wget https://raw.githubusercontent.com/geraldhansen/ubuntu-unattended/master/create-unattended-iso.sh
+$ wget https://raw.githubusercontent.com/netson/ubuntu-unattended/master/create-unattended-iso.sh
 $ chmod +x create-unattended-iso.sh
 $ sudo ./create-unattended-iso.sh
 ```
@@ -39,18 +38,17 @@ $ sudo ./create-unattended-iso.sh
 
   [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin
   [2] Ubuntu 14.04.2 LTS Server amd64 - Trusty Tahr
-  [3] Ubuntu 15.10 Server amd64       - Wily Werewolf
 
- please enter your preference: [1|2|3]:
+ please enter your preference: [1|2]:
 ```
 
-* Enter your desired timezone; the default is the timezone were the script runs:
+* Enter your desired timezone; the default is *Europe/Amsterdam*:
 
 ```
- please enter your preferred timezone: Europe/Berlin
+ please enter your preferred timezone: Europe/Amsterdam
 ```
 
-* Enter your desired username, root will be also possible; the default is *netson*:
+* Enter your desired username; the default is *netson*:
 
 ```
  please enter your preferred username: netson
