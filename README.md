@@ -14,6 +14,7 @@ The script supports the following Ubuntu editions out of the box:
 
 * Ubuntu 12.04.4 Server LTS amd64 - Precise Pangolin
 * Ubuntu 14.04.2 Server LTS amd64 - Trusty Tahr
+* Ubuntu 16.04 LTS Server amd64   - Xenial Xerus
 
 This script has been tested on and with these two versions as well, but I see no reason why it shouldn't work with other Ubuntu editions. Other editions would require minor changes to the script though.
 
