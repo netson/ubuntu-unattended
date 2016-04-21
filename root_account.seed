@@ -1,5 +1,0 @@
-# user account setup
-d-i passwd/root-login                                       boolean     true
-d-i passwd/make-user                                        boolean     false
-d-i passwd/root-password-crypted                            password    {{pwhash}}
-d-i preseed/late_command                                    string      chroot /target sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
