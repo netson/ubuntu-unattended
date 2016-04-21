@@ -3,6 +3,7 @@
 # file names & paths
 tmp="/tmp"  # destination folder to store the final iso file
 hostname="ubuntu"
+currentuser="$( whoami)"
 
 # define spinner function for slow tasks
 # courtesy of http://fitnr.com/showing-a-bash-spinner.html
@@ -51,14 +52,21 @@ echo " |            UNATTENDED UBUNTU ISO MAKER            |"
 echo " +---------------------------------------------------+"
 echo
 
+# ask if script runs without sudo or root priveleges
+if [ $currentuser != "root" ]; then
+    echo " you run this without sudo privileges or not as root"
+    exit 1
+fi
+
 # ask whether to include vmware tools or not
 while true; do
     echo " which ubuntu edition would you like to remaster:"
     echo
     echo "  [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin"
     echo "  [2] Ubuntu 14.04.3 LTS Server amd64 - Trusty Tahr"
+    echo "  [3] Ubuntu 16.04 LTS Server amd64   - Xenial Xerus"
     echo
-    read -p " please enter your preference: [1|2]: " ubver
+    read -p " please enter your preference: [1|2|3]: " ubver
     case $ubver in
         [1]* )  download_file="ubuntu-12.04.4-server-amd64.iso"           # filename of the iso to be downloaded
                 download_location="http://releases.ubuntu.com/12.04/"     # location of the file to be downloaded
@@ -68,7 +76,11 @@ while true; do
                 download_location="http://releases.ubuntu.com/14.04/"     # location of the file to be downloaded
                 new_iso_name="ubuntu-14.04.3-server-amd64-unattended.iso"   # filename of the new iso file to be created
                 break;;
-        * ) echo " please answer [1] or [2]";;
+        [3]* )  download_file="ubuntu-16.04-server-amd64.iso"
+                download_location="http://releases.ubuntu.com/16.04/"
+                new_iso_name="ubuntu-16.04-server-amd64-unattended.iso"
+                break;;
+        * ) echo " please answer [1], [2] or [3]";;
     esac
 done
 

@@ -38,8 +38,9 @@ $ sudo ./create-unattended-iso.sh
 
   [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin
   [2] Ubuntu 14.04.2 LTS Server amd64 - Trusty Tahr
+  [3] Ubuntu 16.04 LTS Server amd64   - Xenial Xerus
 
- please enter your preference: [1|2]:
+ please enter your preference: [1|2|3]:
 ```
 
 * Enter your desired timezone; the default is *Europe/Amsterdam*:
