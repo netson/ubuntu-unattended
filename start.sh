@@ -5,7 +5,7 @@ set -e
 default_hostname="$(hostname)"
 default_domain="netson.local"
 default_puppetmaster="foreman.netson.nl"
-tmp="/home/netson/"
+tmp="/root/"
 
 clear
 
@@ -85,24 +85,24 @@ sed -i "s@ubuntu@$hostname@g" /etc/hosts
 hostname "$hostname"
 
 # update repos
-apt-get -y update > /dev/null 2>&1
-apt-get -y upgrade > /dev/null 2>&1
-apt-get -y dist-upgrade > /dev/null 2>&1
-apt-get -y autoremove > /dev/null 2>&1
-apt-get -y purge > /dev/null 2>&1
+apt-get -y update
+apt-get -y upgrade
+apt-get -y dist-upgrade
+apt-get -y autoremove
+apt-get -y purge
 
 # install puppet
 if [[ include_puppet_repo -eq 1 ]]; then
     # install puppet repo
-    wget https://apt.puppetlabs.com/$puppet_deb -O $tmp/$puppet_deb > /dev/null 2>&1
-    dpkg -i $tmp/$puppet_deb > /dev/null 2>&1
-    apt-get -y update > /dev/null 2>&1
+    wget https://apt.puppetlabs.com/$puppet_deb -O $tmp/$puppet_deb
+    dpkg -i $tmp/$puppet_deb
+    apt-get -y update
     rm $tmp/$puppet_deb
     
     # check to install puppet agent
     if [[ setup_agent -eq 1 ]] ; then
         # install puppet
-        apt-get -y install puppet > /dev/null 2>&1
+        apt-get -y install puppet
 
         # set puppet master settings
         sed -i "s@\[master\]@\
