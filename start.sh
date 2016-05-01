@@ -113,6 +113,9 @@ pluginsync=true\n\
 \n\
 \[master\]@g" /etc/puppet/puppet.conf
 
+        # remove the deprecated template dir directive from the puppet.conf file
+        sed -i "/^templatedir=/d" /etc/puppet/puppet.conf
+
         # download the finish script if it doesn't yet exist
         if [[ ! -f $tmp/finish.sh ]]; then
             echo -n " downloading finish.sh: "
