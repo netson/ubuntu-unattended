@@ -13,7 +13,7 @@ Created by: **Rinck Sonnenberg (Netson)**
 The script supports the following Ubuntu editions out of the box:
 
 * Ubuntu 12.04.4 Server LTS amd64 - Precise Pangolin
-* Ubuntu 14.04.2 Server LTS amd64 - Trusty Tahr
+* Ubuntu 14.04.3 Server LTS amd64 - Trusty Tahr
 * Ubuntu 16.04 Server LTS amd64   - Xenial Xerus
 
 This script has been tested on and with these three versions as well, but I see no reason why it shouldn't work with other Ubuntu editions. Other editions would require minor changes to the script though.
