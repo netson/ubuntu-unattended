@@ -115,6 +115,14 @@ if [[ ! -f $tmp/$download_file ]]; then
     echo -n " downloading $download_file: "
     download "$download_location$download_file"
 fi
+if [[ ! -f $tmp/$download_file ]]; then
+	echo "Error: Failed to download ISO: $download_location$download_file"
+	echo "This file may have moved or may no longer exist."
+	echo
+	echo "You can download it manually and move it to $tmp/$download_file"
+	echo "Then run this script again."
+	exit 1
+fi
 
 # download netson seed file
 seed_file="netson.seed"
