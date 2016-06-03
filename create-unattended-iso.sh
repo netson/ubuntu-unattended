@@ -63,7 +63,7 @@ while true; do
     echo " which ubuntu edition would you like to remaster:"
     echo
     echo "  [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin"
-    echo "  [2] Ubuntu 14.04.3 LTS Server amd64 - Trusty Tahr"
+    echo "  [2] Ubuntu 14.04.4 LTS Server amd64 - Trusty Tahr"
     echo "  [3] Ubuntu 16.04 LTS Server amd64   - Xenial Xerus"
     echo
     read -p " please enter your preference: [1|2|3]: " ubver
@@ -72,9 +72,9 @@ while true; do
                 download_location="http://releases.ubuntu.com/12.04/"     # location of the file to be downloaded
                 new_iso_name="ubuntu-12.04.4-server-amd64-unattended.iso" # filename of the new iso file to be created
                 break;;
-        [2]* )  download_file="ubuntu-14.04.3-server-amd64.iso"             # filename of the iso to be downloaded
+        [2]* )  download_file="ubuntu-14.04.4-server-amd64.iso"             # filename of the iso to be downloaded
                 download_location="http://releases.ubuntu.com/14.04/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-14.04.3-server-amd64-unattended.iso"   # filename of the new iso file to be created
+                new_iso_name="ubuntu-14.04.4-server-amd64-unattended.iso"   # filename of the new iso file to be created
                 break;;
         [3]* )  download_file="ubuntu-16.04-server-amd64.iso"
                 download_location="http://releases.ubuntu.com/16.04/"
@@ -114,6 +114,14 @@ cd $tmp
 if [[ ! -f $tmp/$download_file ]]; then
     echo -n " downloading $download_file: "
     download "$download_location$download_file"
+fi
+if [[ ! -f $tmp/$download_file ]]; then
+	echo "Error: Failed to download ISO: $download_location$download_file"
+	echo "This file may have moved or may no longer exist."
+	echo
+	echo "You can download it manually and move it to $tmp/$download_file"
+	echo "Then run this script again."
+	exit 1
 fi
 
 # download netson seed file
