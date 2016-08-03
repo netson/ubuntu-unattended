@@ -64,7 +64,7 @@ while true; do
     echo
     echo "  [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin"
     echo "  [2] Ubuntu 14.04.4 LTS Server amd64 - Trusty Tahr"
-    echo "  [3] Ubuntu 16.04 LTS Server amd64   - Xenial Xerus"
+    echo "  [3] Ubuntu 16.04.1 LTS Server amd64 - Xenial Xerus"
     echo
     read -p " please enter your preference: [1|2|3]: " ubver
     case $ubver in
@@ -76,9 +76,9 @@ while true; do
                 download_location="http://releases.ubuntu.com/14.04/"     # location of the file to be downloaded
                 new_iso_name="ubuntu-14.04.4-server-amd64-unattended.iso"   # filename of the new iso file to be created
                 break;;
-        [3]* )  download_file="ubuntu-16.04-server-amd64.iso"
+        [3]* )  download_file="ubuntu-16.04.1-server-amd64.iso"
                 download_location="http://releases.ubuntu.com/16.04/"
-                new_iso_name="ubuntu-16.04-server-amd64-unattended.iso"
+                new_iso_name="ubuntu-16.04.1-server-amd64-unattended.iso"
                 break;;
         * ) echo " please answer [1], [2] or [3]";;
     esac
