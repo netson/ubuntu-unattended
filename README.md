@@ -14,7 +14,7 @@ The script supports the following Ubuntu editions out of the box:
 
 * Ubuntu 12.04.4 Server LTS amd64 - Precise Pangolin
 * Ubuntu 14.04.3 Server LTS amd64 - Trusty Tahr
-* Ubuntu 16.04 Server LTS amd64   - Xenial Xerus
+* Ubuntu 16.04.1 Server LTS amd64 - Xenial Xerus
 
 This script has been tested on and with these three versions as well, but I see no reason why it shouldn't work with other Ubuntu editions. Other editions would require minor changes to the script though.
 
@@ -39,7 +39,7 @@ $ sudo ./create-unattended-iso.sh
 
   [1] Ubuntu 12.04.4 LTS Server amd64 - Precise Pangolin
   [2] Ubuntu 14.04.2 LTS Server amd64 - Trusty Tahr
-  [3] Ubuntu 16.04 Server LTS amd64   - Xenial Xerus
+  [3] Ubuntu 16.04.1 Server LTS amd64 - Xenial Xerus
 
  please enter your preference: [1|2|3]:
 ```
