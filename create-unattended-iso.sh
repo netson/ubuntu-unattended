@@ -58,6 +58,14 @@ if [ $currentuser != "root" ]; then
     exit 1
 fi
 
+#check that we are in ubuntu 16.04
+
+fgrep "16.04" /etc/os-release >/dev/null 2>&1
+
+if [ $? -eq 0 ]; then
+     ub1604="yes"
+fi
+
 # ask whether to include vmware tools or not
 while true; do
     echo " which ubuntu edition would you like to remaster:"
@@ -109,11 +117,13 @@ if [[ "$password" != "$password2" ]]; then
     exit
 fi
 
-# download the ubunto iso
+# download the ubunto iso. If it already exists, do not delete in the end.
 cd $tmp
 if [[ ! -f $tmp/$download_file ]]; then
     echo -n " downloading $download_file: "
     download "$download_location$download_file"
+else
+    df_exists="yes"
 fi
 if [[ ! -f $tmp/$download_file ]]; then
 	echo "Error: Failed to download ISO: $download_location$download_file"
@@ -141,8 +151,14 @@ if [ $(program_is_installed "mkpasswd") -eq 0 ] || [ $(program_is_installed "mki
 fi
 if [[ $bootable == "yes" ]] || [[ $bootable == "y" ]]; then
     if [ $(program_is_installed "isohybrid") -eq 0 ]; then
+      #16.04
+      if [ $ub1604 == "yes" ]; then
+        (apt-get -y install syslinux syslinux-utils > /dev/null 2>&1) &
+        spinner $!
+      else
         (apt-get -y install syslinux > /dev/null 2>&1) &
         spinner $!
+      fi
     fi
 fi
 
@@ -166,11 +182,25 @@ spinner $!
 
 # set the language for the installation menu
 cd $tmp/iso_new
+#doesn't work for 16.04
 echo en > $tmp/iso_new/isolinux/lang
 
+#16.04
+#taken from https://github.com/fries/prepare-ubuntu-unattended-install-iso/blob/master/make.sh
+sed -i -r 's/timeout\s+[0-9]+/timeout 1/g' $tmp/iso_new/isolinux/isolinux.cfg
+
+
 # set late command
-late_command="chroot /target wget -O /home/$username/start.sh https://github.com/netson/ubuntu-unattended/raw/master/start.sh ;\
-    chroot /target chmod +x /home/$username/start.sh ;"
+
+if [ $ub1604 == "yes" ]; then
+   late_command="apt-install wget; in-target wget --no-check-certificate -O /home/$username/start.sh https://github.com/netson/ubuntu-unattended/raw/master/start.sh ;\
+     in-target chmod +x /home/$username/start.sh ;"
+else 
+   late_command="chroot /target wget -O /home/$username/start.sh https://github.com/netson/ubuntu-unattended/raw/master/start.sh ;\
+     chroot /target chmod +x /home/$username/start.sh ;"
+fi
+
+
 
 # copy the netson seed file to the iso
 cp -rT $tmp/$seed_file $tmp/iso_new/preseed/$seed_file
@@ -213,7 +243,10 @@ fi
 # cleanup
 umount $tmp/iso_org
 rm -rf $tmp/iso_new
-rm -rf $tmp/iso_org
+
+if [  $df_exists != "yes" ]; then
+   rm -rf $tmp/iso_org
+fi
 
 # print info to user
 echo " -----"
