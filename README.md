@@ -12,9 +12,11 @@ Created by: **Rinck Sonnenberg (Netson)**
 
 The script supports the following Ubuntu editions out of the box:
 
-* Ubuntu 12.04.4 Server LTS amd64 - Precise Pangolin
-* Ubuntu 14.04.3 Server LTS amd64 - Trusty Tahr
-* Ubuntu 16.04.1 Server LTS amd64 - Xenial Xerus
+* Ubuntu 12.04 Server LTS amd64 - Precise Pangolin
+* Ubuntu 14.04 Server LTS amd64 - Trusty Tahr
+* Ubuntu 16.04 Server LTS amd64 - Xenial Xerus
+
+Script automatically chooses the latest current image by parsing http://releases.ubuntu.com page.
 
 This script has been tested on and with these three versions as well, but I see no reason why it shouldn't work with other Ubuntu editions. Other editions would require minor changes to the script though.
 
@@ -23,7 +25,7 @@ This script has been tested on and with these three versions as well, but I see 
 * From your command line, run the following commands:
 
 ```
-$ wget https://raw.githubusercontent.com/netson/ubuntu-unattended/master/create-unattended-iso.sh
+$ wget https://raw.githubusercontent.com/skorzhevsky/ubuntu-unattended/master/create-unattended-iso.sh
 $ chmod +x create-unattended-iso.sh
 $ sudo ./create-unattended-iso.sh
 ```
