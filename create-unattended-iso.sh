@@ -54,7 +54,7 @@ echo
 
 # ask if script runs without sudo or root priveleges
 if [ $currentuser != "root" ]; then
-    echo " you run this without sudo privileges or not as root"
+    echo "You need sudo privileges to run this script"
     exit 1
 fi
 
