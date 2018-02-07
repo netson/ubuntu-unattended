@@ -162,7 +162,7 @@ fi
 if [[ $bootable == "yes" ]] || [[ $bootable == "y" ]]; then
     if [ $(program_is_installed "isohybrid") -eq 0 ]; then
       #16.04
-      if [ $ub1604 == "yes" ]; then
+      if [[ $ub1604 == "yes" || $(lsb_release -cs) == "artful" ]]; then
         (apt-get -y install syslinux syslinux-utils > /dev/null 2>&1) &
         spinner $!
       else
@@ -202,7 +202,7 @@ sed -i -r 's/timeout\s+[0-9]+/timeout 1/g' $tmp/iso_new/isolinux/isolinux.cfg
 
 # set late command
 
-if [ $ub1604 == "yes" ]; then
+if [[ $ub1604 == "yes" ]]; then
    late_command="apt-install wget; in-target wget --no-check-certificate -O /home/$username/start.sh https://github.com/netson/ubuntu-unattended/raw/master/start.sh ;\
      in-target chmod +x /home/$username/start.sh ;"
 else 
