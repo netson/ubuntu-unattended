@@ -111,7 +111,7 @@ done
 
 if [ -f /etc/timezone ]; then
   timezone=`cat /etc/timezone`
-elif [ -h /etc/localtime]; then
+elif [ -h /etc/localtime ]; then
   timezone=`readlink /etc/localtime | sed "s/\/usr\/share\/zoneinfo\///"`
 else
   checksum=`md5sum /etc/localtime | cut -d' ' -f1`
