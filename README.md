@@ -15,6 +15,7 @@ The script supports the following Ubuntu editions out of the box:
 * Ubuntu 12.04 Server LTS amd64 - Precise Pangolin
 * Ubuntu 14.04 Server LTS amd64 - Trusty Tahr
 * Ubuntu 16.04 Server LTS amd64 - Xenial Xerus
+* Ubuntu 18.04 Server LTS amd64 - Bionic Beaver
 
 Script automatically chooses the latest current image by parsing http://releases.ubuntu.com page.
 
