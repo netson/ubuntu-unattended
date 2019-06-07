@@ -71,10 +71,14 @@ tmphtml=$tmp/tmphtml
 rm $tmphtml >/dev/null 2>&1
 wget -O $tmphtml 'http://releases.ubuntu.com/' >/dev/null 2>&1
 
-prec=$(fgrep Precise $tmphtml | head -1 | awk '{print $3}')
-trus=$(fgrep Trusty $tmphtml | head -1 | awk '{print $3}')
-xenn=$(fgrep Xenial $tmphtml | head -1 | awk '{print $3}')
-bion=$(fgrep Bionic $tmphtml | head -1 | awk '{print $3}')
+prec=$(fgrep Precise $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
+trus=$(fgrep Trusty $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
+xenn=$(fgrep Xenial $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
+bion=$(fgrep Bionic $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
+prec_vers=$(fgrep Precise $tmphtml | head -1 | awk '{print $6}')
+trus_vers=$(fgrep Trusty $tmphtml | head -1 | awk '{print $6}')
+xenn_vers=$(fgrep Xenial $tmphtml | head -1 | awk '{print $6}')
+bion_vers=$(fgrep Bionic $tmphtml | head -1 | awk '{print $6}')
 
 
 
@@ -89,21 +93,21 @@ while true; do
     echo
     read -p " please enter your preference: [1|2|3|4]: " ubver
     case $ubver in
-        [1]* )  download_file="ubuntu-$prec-server-amd64.iso"           # filename of the iso to be downloaded
+        [1]* )  download_file="ubuntu-$prec_vers-server-amd64.iso"           # filename of the iso to be downloaded
                 download_location="http://releases.ubuntu.com/$prec/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-$prec-server-amd64-unattended.iso" # filename of the new iso file to be created
+                new_iso_name="ubuntu-$prec_vers-server-amd64-unattended.iso" # filename of the new iso file to be created
                 break;;
-        [2]* )  download_file="ubuntu-$trus-server-amd64.iso"             # filename of the iso to be downloaded
+	[2]* )  download_file="ubuntu-$trus_vers-server-amd64.iso"             # filename of the iso to be downloaded
                 download_location="http://releases.ubuntu.com/$trus/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-$trus-server-amd64-unattended.iso"   # filename of the new iso file to be created
+                new_iso_name="ubuntu-$trus_vers-server-amd64-unattended.iso"   # filename of the new iso file to be created
                 break;;
-        [3]* )  download_file="ubuntu-$xenn-server-amd64.iso"
+        [3]* )  download_file="ubuntu-$xenn_vers-server-amd64.iso"
                 download_location="http://releases.ubuntu.com/$xenn/"
-                new_iso_name="ubuntu-$xenn-server-amd64-unattended.iso"
+                new_iso_name="ubuntu-$xenn_vers-server-amd64-unattended.iso"
                 break;;
-        [4]* )  download_file="ubuntu-$bion-server-amd64.iso"
+        [4]* )  download_file="ubuntu-$bion_vers-server-amd64.iso"
                 download_location="http://cdimage.ubuntu.com/releases/$bion/release/"
-                new_iso_name="ubuntu-$bion-server-amd64-unattended.iso"
+                new_iso_name="ubuntu-$bion_vers-server-amd64-unattended.iso"
                 break;;
         * ) echo " please answer [1], [2], [3] or [4]";;
     esac
