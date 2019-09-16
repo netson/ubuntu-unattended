@@ -138,7 +138,7 @@ if [[ "$password" != "$password2" ]]; then
     exit
 fi
 
-# download the ubunto iso. If it already exists, do not delete in the end.
+# download the ubuntu iso. If it already exists, do not delete in the end.
 cd $tmp
 if [[ ! -f $tmp/$download_file ]]; then
     echo -n " downloading $download_file: "
