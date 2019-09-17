@@ -138,7 +138,7 @@ if [[ "$password" != "$password2" ]]; then
     exit
 fi
 
-# download the ubunto iso. If it already exists, do not delete in the end.
+# download the ubuntu iso. If it already exists, do not delete in the end.
 cd $tmp
 if [[ ! -f $tmp/$download_file ]]; then
     echo -n " downloading $download_file: "
@@ -243,6 +243,10 @@ sed -i "/label install/ilabel autoinstall\n\
   menu label ^Autoinstall NETSON Ubuntu Server\n\
   kernel /install/vmlinuz\n\
   append file=/cdrom/preseed/ubuntu-server.seed initrd=/install/initrd.gz auto=true priority=high preseed/file=/cdrom/preseed/netson.seed preseed/file/checksum=$seed_checksum --" $tmp/iso_new/isolinux/txt.cfg
+  
+# add the autoinstall option to the menu for USB Boot
+sed -i '/set timeout=30/amenuentry "Autoinstall Netson Ubuntu Server" {\n\	set gfxpayload=keep\n\	linux /install/vmlinuz append file=/cdrom/preseed/ubuntu-server.seed initrd=/install/initrd.gz auto=true priority=high preseed/file=/cdrom/preseed/netson.seed quiet ---\n\	initrd	/install/initrd.gz\n\}' $tmp/iso_new/boot/grub/grub.cfg
+sed -i -r 's/timeout=[0-9]+/timeout=1/g' $tmp/iso_new/boot/grub/grub.cfg
 
 echo " creating the remastered iso"
 cd $tmp/iso_new
