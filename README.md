@@ -30,6 +30,10 @@ $ wget https://raw.githubusercontent.com/netson/ubuntu-unattended/master/create-
 $ chmod +x create-unattended-iso.sh
 $ sudo ./create-unattended-iso.sh
 ```
+or if you wish to rebuild the menu by getting available version from ubuntu.com:
+```
+$ sudo ./create-unattended-iso.sh rebuild
+```
 
 * Choose which version you would like to remaster:
 
@@ -119,6 +123,10 @@ Just fire off the start.sh script in your users' home directory to complete the 
 ## Troubleshooting
 
 If you run into any issues, please create an issue; I am by no means a shell/bash expert (far from it), and it took me a while to compile this script into something that's easy to use and just works, but I'm happy to help where I can! :)
+
+## Latest Changes
+2020/01/26
+The script has been enhanced to find available versions from http://cdimage.ubuntu.com/releases/.  The enhancement will display versions that have iso available for server and amd64 architecture.  This enhancement has been spot checked and the unatteneded iso has been used during the test.
 
 ## License
 MIT

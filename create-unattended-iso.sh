@@ -71,47 +71,60 @@ tmphtml=$tmp/tmphtml
 rm $tmphtml >/dev/null 2>&1
 wget -O $tmphtml 'http://releases.ubuntu.com/' >/dev/null 2>&1
 
-prec=$(fgrep Precise $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
-trus=$(fgrep Trusty $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
-xenn=$(fgrep Xenial $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
-bion=$(fgrep Bionic $tmphtml | head -1 | awk '{print $3}' | sed 's/href=\"//; s/\/\"//')
-prec_vers=$(fgrep Precise $tmphtml | head -1 | awk '{print $6}')
-trus_vers=$(fgrep Trusty $tmphtml | head -1 | awk '{print $6}')
-xenn_vers=$(fgrep Xenial $tmphtml | head -1 | awk '{print $6}')
-bion_vers=$(fgrep Bionic $tmphtml | head -1 | awk '{print $6}')
+# create the menu based on available versions from
+# http://cdimage.ubuntu.com/releases/
+# http://releases.ubuntu.com/
 
+WORKFILE=www.list
+EXCLUDE_LIST='torrent|zsync'
+COUNTER=1
+if [ ! -z $1 ] && [ $1 == "rebuild" ]; then
+    rm -f ${WORKFILE}
+fi
+wget -qO new.html http://cdimage.ubuntu.com/releases/
+if [ ! -e ${WORKFILE} ]; then
+     echo Building menu from available builds
+     for version in $(grep -w DIR new.html | grep -oP href=\"[0-9].* | cut -d'"' -f2 | tr -d '/'); do
+        TITLE=$(wget -qO - http://cdimage.ubuntu.com/releases/${version}/release | grep h1 | sed s'/^ *//g' | sed s'/^.*\(Ubuntu.*\).*$/\1/' | sed s'|</h1>||g')
+        CODE=$(echo ${TITLE} | cut -d "(" -f2 | tr -d ")")
+        URL=http://releases.ubuntu.com/${version}/
+        wget -qO - ${URL} | grep server | grep amd64 > /dev/null
+        if [ $? -ne 0 ] ; then
+            URL=http://cdimage.ubuntu.com/releases/${version}/release/
+        fi
+        FILE=$(wget -qO - ${URL} | grep server-amd64 | grep -o ubuntu.*.iso | egrep -v ${EXCLUDE_LIST} | grep ">" | cut -d ">" -f2 | sort -u)
+        FILE=$(echo ${FILE} | tr "\n" " " | tr "\r" " ")
+        if [[ ! -z ${FILE} ]]; then
+            echo ${TITLE}
+            for iso in ${FILE}; do
+                ver=$(echo ${iso} | cut -d- -f2)
+                if [ ! -e ${WORKFILE} ] || ! grep -q "${ver} " ${WORKFILE}; then
+                    echo "${COUNTER} ${ver} ${URL} ${iso} \"${CODE}\"" >> ${WORKFILE}
+                    ((COUNTER++))
+                fi
+            done
+        fi
+     done | uniq
+fi
 
-
-# ask whether to include vmware tools or not
-while true; do
+# display the menu for user to select version
+echo
+MIN=1
+MAX=$(tail -1 ${WORKFILE} | awk '{print $1}')
+ubver=0
+while [ ${ubver} -lt ${MIN} ] || [ ${ubver} -gt ${MAX} ]; do
     echo " which ubuntu edition would you like to remaster:"
     echo
-    echo "  [1] Ubuntu $prec LTS Server amd64 - Precise Pangolin"
-    echo "  [2] Ubuntu $trus LTS Server amd64 - Trusty Tahr"
-    echo "  [3] Ubuntu $xenn LTS Server amd64 - Xenial Xerus"
-    echo "  [4] Ubuntu $bion LTS Server amd64 - Bionic Beaver"
+    cat ${WORKFILE} | while read A B C D E; do
+        echo " [$A] Ubuntu $B ($E)"
+    done
     echo
-    read -p " please enter your preference: [1|2|3|4]: " ubver
-    case $ubver in
-        [1]* )  download_file="ubuntu-$prec_vers-server-amd64.iso"           # filename of the iso to be downloaded
-                download_location="http://releases.ubuntu.com/$prec/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-$prec_vers-server-amd64-unattended.iso" # filename of the new iso file to be created
-                break;;
-	[2]* )  download_file="ubuntu-$trus_vers-server-amd64.iso"             # filename of the iso to be downloaded
-                download_location="http://releases.ubuntu.com/$trus/"     # location of the file to be downloaded
-                new_iso_name="ubuntu-$trus_vers-server-amd64-unattended.iso"   # filename of the new iso file to be created
-                break;;
-        [3]* )  download_file="ubuntu-$xenn_vers-server-amd64.iso"
-                download_location="http://releases.ubuntu.com/$xenn/"
-                new_iso_name="ubuntu-$xenn_vers-server-amd64-unattended.iso"
-                break;;
-        [4]* )  download_file="ubuntu-$bion_vers-server-amd64.iso"
-                download_location="http://cdimage.ubuntu.com/releases/$bion/release/"
-                new_iso_name="ubuntu-$bion_vers-server-amd64-unattended.iso"
-                break;;
-        * ) echo " please answer [1], [2], [3] or [4]";;
-    esac
+    read -p " please enter your preference: [${MIN}-${MAX}]: " ubver
 done
+
+download_file=$(grep -w ^$ubver ${WORKFILE} | awk '{print $4}')           # filename of the iso to be downloaded
+download_location=$(grep -w ^$ubver ${WORKFILE} | awk '{print $3}')     # location of the file to be downloaded
+new_iso_name="ubuntu-$(grep -w ^$ubver ${WORKFILE} | awk '{print $2}')-server-amd64-unattended.iso" # filename of the new iso file to be created
 
 if [ -f /etc/timezone ]; then
   timezone=`cat /etc/timezone`
@@ -145,12 +158,12 @@ if [[ ! -f $tmp/$download_file ]]; then
     download "$download_location$download_file"
 fi
 if [[ ! -f $tmp/$download_file ]]; then
-	echo "Error: Failed to download ISO: $download_location$download_file"
-	echo "This file may have moved or may no longer exist."
-	echo
-	echo "You can download it manually and move it to $tmp/$download_file"
-	echo "Then run this script again."
-	exit 1
+    echo "Error: Failed to download ISO: $download_location$download_file"
+    echo "This file may have moved or may no longer exist."
+    echo
+    echo "You can download it manually and move it to $tmp/$download_file"
+    echo "Then run this script again."
+    exit 1
 fi
 
 # download netson seed file
@@ -214,8 +227,6 @@ sed -i -r 's/timeout\s+[0-9]+/timeout 1/g' $tmp/iso_new/isolinux/isolinux.cfg
    late_command="chroot /target curl -L -o /home/$username/start.sh https://raw.githubusercontent.com/netson/ubuntu-unattended/master/start.sh ;\
      chroot /target chmod +x /home/$username/start.sh ;"
 
-
-
 # copy the netson seed file to the iso
 cp -rT $tmp/$seed_file $tmp/iso_new/preseed/$seed_file
 
@@ -243,7 +254,7 @@ sed -i "/label install/ilabel autoinstall\n\
   menu label ^Autoinstall NETSON Ubuntu Server\n\
   kernel /install/vmlinuz\n\
   append file=/cdrom/preseed/ubuntu-server.seed initrd=/install/initrd.gz auto=true priority=high preseed/file=/cdrom/preseed/netson.seed preseed/file/checksum=$seed_checksum --" $tmp/iso_new/isolinux/txt.cfg
-  
+
 # add the autoinstall option to the menu for USB Boot
 sed -i '/set timeout=30/amenuentry "Autoinstall Netson Ubuntu Server" {\n\	set gfxpayload=keep\n\	linux /install/vmlinuz append file=/cdrom/preseed/ubuntu-server.seed initrd=/install/initrd.gz auto=true priority=high preseed/file=/cdrom/preseed/netson.seed quiet ---\n\	initrd	/install/initrd.gz\n\}' $tmp/iso_new/boot/grub/grub.cfg
 sed -i -r 's/timeout=[0-9]+/timeout=1/g' $tmp/iso_new/boot/grub/grub.cfg
@@ -262,7 +273,7 @@ fi
 umount $tmp/iso_org
 rm -rf $tmp/iso_new
 rm -rf $tmp/iso_org
-rm -rf $tmphtml
+rm -rf $tmphtml new.html
 
 
 # print info to user
