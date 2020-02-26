@@ -76,19 +76,18 @@ wget -O $tmphtml 'http://releases.ubuntu.com/' >/dev/null 2>&1
 # http://releases.ubuntu.com/
 
 WORKFILE=www.list
-EXCLUDE_LIST='torrent|zsync'
+EXCLUDE_LIST='torrent|zsync|live'
 COUNTER=1
 if [ ! -z $1 ] && [ $1 == "rebuild" ]; then
     rm -f ${WORKFILE}
 fi
-wget -qO new.html http://cdimage.ubuntu.com/releases/
 if [ ! -e ${WORKFILE} ]; then
      echo Building menu from available builds
-     for version in $(grep -w DIR new.html | grep -oP href=\"[0-9].* | cut -d'"' -f2 | tr -d '/'); do
+     for version in $(wget -qO - http://cdimage.ubuntu.com/releases/ | grep -w DIR | grep -oP href=\"[0-9].* | cut -d'"' -f2 | tr -d '/'); do
         TITLE=$(wget -qO - http://cdimage.ubuntu.com/releases/${version}/release | grep h1 | sed s'/^ *//g' | sed s'/^.*\(Ubuntu.*\).*$/\1/' | sed s'|</h1>||g')
         CODE=$(echo ${TITLE} | cut -d "(" -f2 | tr -d ")")
         URL=http://releases.ubuntu.com/${version}/
-        wget -qO - ${URL} | grep server | grep amd64 > /dev/null
+        wget -qO - ${URL} | grep server | grep amd64 | egrep -v ${EXCLUDE_LIST} > /dev/null
         if [ $? -ne 0 ] ; then
             URL=http://cdimage.ubuntu.com/releases/${version}/release/
         fi
@@ -273,7 +272,7 @@ fi
 umount $tmp/iso_org
 rm -rf $tmp/iso_new
 rm -rf $tmp/iso_org
-rm -rf $tmphtml new.html
+rm -rf $tmphtml
 
 
 # print info to user

@@ -30,7 +30,8 @@ $ wget https://raw.githubusercontent.com/netson/ubuntu-unattended/master/create-
 $ chmod +x create-unattended-iso.sh
 $ sudo ./create-unattended-iso.sh
 ```
-or if you wish to rebuild the menu by getting available version from ubuntu.com:
+The script will keep a copy of the available iso in a work file for faster retrieval.
+If you wish to rebuild the menu by retrieving available versions from ubuntu.com:
 ```
 $ sudo ./create-unattended-iso.sh rebuild
 ```
