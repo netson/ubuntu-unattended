@@ -87,13 +87,13 @@ if [ ! -e ${WORKFILE} ]; then
         TITLE=$(wget -qO - http://cdimage.ubuntu.com/releases/${version}/release | grep h1 | sed s'/^ *//g' | sed s'/^.*\(Ubuntu.*\).*$/\1/' | sed s'|</h1>||g')
         CODE=$(echo ${TITLE} | cut -d "(" -f2 | tr -d ")")
         URL=http://releases.ubuntu.com/${version}/
-        wget -qO - ${URL} | grep server | grep amd64 | egrep -v ${EXCLUDE_LIST} > /dev/null
+        wget -qO - ${URL} | grep server | grep amd64 | grep -v "${EXCLUDE_LIST}" > /dev/null
         if [ $? -ne 0 ] ; then
             URL=http://cdimage.ubuntu.com/releases/${version}/release/
         fi
-        FILE=$(wget -qO - ${URL} | grep server-amd64 | grep -o ubuntu.*.iso | egrep -v ${EXCLUDE_LIST} | grep ">" | cut -d ">" -f2 | sort -u)
+        FILE=$(wget -qO - ${URL} | grep server-amd64 | grep -o ubuntu.*.iso | grep -v "${EXCLUDE_LIST}" | grep ">" | cut -d ">" -f2 | sort -u)
         FILE=$(echo ${FILE} | tr "\n" " " | tr "\r" " ")
-        if [[ ! -z ${FILE} ]]; then
+        if [[ ! -z ${FILE} ]] && [[ ! -z ${TITLE} ]]; then
             echo ${TITLE}
             for iso in ${FILE}; do
                 ver=$(echo ${iso} | cut -d- -f2)
